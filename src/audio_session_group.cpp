@@ -25,7 +25,7 @@ std::vector<AudioSession> const &AudioSessionGroup::get_sessions() const
 
 void AudioSessionGroup::print() const
 {
-    std::wcout << this->name << ":\n\n";
+    std::wcout << this->name << ":\n";
     for (auto const &audio_session : this->audio_sessions)
     {
         audio_session.print();

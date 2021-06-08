@@ -1,62 +1,46 @@
+#include <algorithm>
 #include <iostream>
-
+#include <iterator>
 #include <chrono>
 #include <thread>
 
 #include <atlexcept.h>
 
+#include "arg_map.hpp"
 #include "audio_manager.hpp"
 #include "int_to_hex_string.hpp"
 
 int main()
 {
-    try
+    AudioManager audio_manager;
+    ArgMap arg_map;
+    std::string line;
+
+    while (true)
     {
-        AudioManager audio_manager;
-        auto audio_session_map = audio_manager.get_audio_sessions();
-
-        std::wstring process_name(L"firefox.exe");
-        auto it = audio_session_map.find(process_name);
-        if (it != audio_session_map.end())
+        std::cout << "command: ";
+        std::getline(std::cin, line);
+        try
         {
-            auto &audio_session_group = it->second;
-
-            if (auto err = audio_session_group.set_master_volume(0.6, NULL); !err.empty())
+            if (line == "quit")
             {
-                std::cout << "Failed to set_master_volume for:\n";
-                for (auto const &[pentry, hr] : err)
-                {
-                    std::cout << " pid: " << pentry.th32ProcessID << " hr: " << int_to_hex_string(hr) << '\n';
-                }
+                break;
             }
-
-            if (auto err = audio_session_group.set_mute(true, NULL); !err.empty())
-            {
-                std::cout << "Failed to set_mute for:\n";
-                for (auto const &[pentry, hr] : err)
-                {
-                    std::cout << " pid: " << pentry.th32ProcessID << " hr: " << int_to_hex_string(hr) << '\n';
-                }
-            }
-
-            audio_session_group.print();
+            arg_map.process(line, audio_manager);
         }
-        else
+        catch (ATL::CAtlException const &e)
         {
-            std::wcout << "Could not find session called " << process_name << '\n';
+            std::cout << "ATL::CAtlException - " << int_to_hex_string(HRESULT(e)) << '\n';
+        }
+        catch (std::exception const &e)
+        {
+            std::cout << "std::exception - " << e.what() << '\n';
+        }
+        catch (...)
+        {
+            std::cout << "Uncaught exception\n";
         }
     }
-    catch (ATL::CAtlException const &e)
-    {
-        std::cout << "ATL::CAtlException - " << int_to_hex_string(HRESULT(e)) << '\n';
-    }
-    catch (std::exception const &e)
-    {
-        std::cout << "std::exception - " << e.what() << '\n';
-    }
-    catch (...)
-    {
-        std::cout << "Uncaught exception\n";
-    }
+loop_end:
     std::cout << "Exited successfully\n";
 }
