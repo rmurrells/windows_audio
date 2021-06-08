@@ -19,7 +19,6 @@ int main()
         auto it = audio_session_map.find(process_name);
         if (it != audio_session_map.end())
         {
-            std::wcout << process_name << ":\n\n";
             auto &audio_session_group = it->second;
 
             if (auto err = audio_session_group.set_master_volume(0.6, NULL); !err.empty())
