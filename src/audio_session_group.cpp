@@ -22,6 +22,13 @@ std::vector<AudioSession> const &AudioSessionGroup::get_sessions() const {
     return this->audio_sessions;
 }
 
+void AudioSessionGroup::print() const {
+    for (auto const &audio_session : this->audio_sessions)
+    {
+        audio_session.print();
+    }
+}
+
 ErrorGroup AudioSessionGroup::set_master_volume(float const fLevel, LPCGUID EventContext)
 {
     return this->run_fn(std::move(std::bind(&AudioSession::set_master_volume, std::placeholders::_1, fLevel, EventContext)));

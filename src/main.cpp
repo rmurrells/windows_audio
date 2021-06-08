@@ -20,26 +20,23 @@ int main()
         if (it != audio_session_map.end())
         {
             std::wcout << process_name << ":\n\n";
+            auto& audio_session_group = it->second;
 
-            if(auto err = it->second.set_master_volume(0.6, NULL); !err.empty()) {
+            if(auto err =audio_session_group.set_master_volume(0.6, NULL); !err.empty()) {
                 std::cout << "Failed to set_master_volume for:\n";
                 for(auto const & [pentry, hr] : err) {
                     std::cout << " pid: " << pentry.th32ProcessID << " hr: " << int_to_hex_string(hr) << '\n';
                 }
             }
             
-            if(auto err = it->second.set_mute(true, NULL); !err.empty()) {
+            if(auto err = audio_session_group.set_mute(true, NULL); !err.empty()) {
                 std::cout << "Failed to set_master_volume for:\n";
                 for(auto const & [pentry, hr] : err) {
                     std::cout << " pid: " << pentry.th32ProcessID << " hr: " << int_to_hex_string(hr) << '\n';
                 }
             }
 
-            auto audio_sessions = it->second.get_sessions();
-            for (auto const &audio_session : audio_sessions)
-            {
-                audio_session.print();
-            }
+            audio_session_group.print();
         }
         else
         {

@@ -14,6 +14,7 @@ public:
     void add(AudioSession &&audio_session);
     std::wstring const &get_name() const;
     std::vector<AudioSession> const &get_sessions() const;
+    void print() const;
     ErrorGroup set_master_volume(float const fLevel, LPCGUID EventContext);
     ErrorGroup set_mute(bool const mute, LPCGUID EventContext);
 
