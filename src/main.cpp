@@ -32,7 +32,7 @@ int main()
 
             if (auto err = audio_session_group.set_mute(true, NULL); !err.empty())
             {
-                std::cout << "Failed to set_master_volume for:\n";
+                std::cout << "Failed to set_mute for:\n";
                 for (auto const &[pentry, hr] : err)
                 {
                     std::cout << " pid: " << pentry.th32ProcessID << " hr: " << int_to_hex_string(hr) << '\n';
