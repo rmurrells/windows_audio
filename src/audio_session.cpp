@@ -80,19 +80,25 @@ void AudioSession::print() const
     if (auto [volume, hr] = this->get_master_volume(); FAILED(hr))
     {
         std::cout << "  Failed to get_master_volume with hr: " << int_to_hex_string(hr) << "\n";
-    } else {
+    }
+    else
+    {
         std::cout << "  Volume: " << volume << '\n';
     }
     if (auto [mute, hr] = this->get_mute(); FAILED(hr))
     {
         std::cout << "  Failed to get_mute with hr: " << int_to_hex_string(hr) << "\n";
-    } else {
+    }
+    else
+    {
         std::cout << "  Mute: " << mute << '\n';
     }
-    if(auto [state, hr] = this->get_state(); FAILED(hr))
+    if (auto [state, hr] = this->get_state(); FAILED(hr))
     {
         std::cout << "  Failed to get_state with hr: " << int_to_hex_string(hr) << "\n";
-    } else {
+    }
+    else
+    {
         std::cout << "  State: " << state << '\n';
     }
     std::cout << '\n';

@@ -69,7 +69,8 @@ AudioSessionMap AudioManager::get_audio_sessions()
         }
 
         AudioSession audio_session(pAudioSessionControl);
-        if (auto [hr, state] = audio_session.get_state(); FAILED(hr)) {
+        if (auto [hr, state] = audio_session.get_state(); FAILED(hr))
+        {
             throw std::runtime_error("get_state (" + std::to_string(session_idx) + ") failed with " + int_to_hex_string(hr));
         }
         else if (state != AudioSessionStateExpired)

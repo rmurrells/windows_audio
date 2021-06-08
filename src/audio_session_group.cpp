@@ -18,11 +18,13 @@ std::wstring const &AudioSessionGroup::get_name() const
     return this->name;
 }
 
-std::vector<AudioSession> const &AudioSessionGroup::get_sessions() const {
+std::vector<AudioSession> const &AudioSessionGroup::get_sessions() const
+{
     return this->audio_sessions;
 }
 
-void AudioSessionGroup::print() const {
+void AudioSessionGroup::print() const
+{
     for (auto const &audio_session : this->audio_sessions)
     {
         audio_session.print();
