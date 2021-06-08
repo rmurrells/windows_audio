@@ -73,6 +73,31 @@ std::tuple<AudioSessionState, HRESULT> AudioSession::get_state() const
     return std::make_tuple(state, hr);
 }
 
+void AudioSession::print() const
+{
+    auto pentry = this->get_pentry();
+    std::cout << "  pid: " << pentry.th32ProcessID << '\n';
+    if (auto [volume, hr] = this->get_master_volume(); FAILED(hr))
+    {
+        std::cout << "  Failed to get_master_volume with hr: " << int_to_hex_string(hr) << "\n";
+    } else {
+        std::cout << "  Volume: " << volume << '\n';
+    }
+    if (auto [mute, hr] = this->get_mute(); FAILED(hr))
+    {
+        std::cout << "  Failed to get_mute with hr: " << int_to_hex_string(hr) << "\n";
+    } else {
+        std::cout << "  Mute: " << mute << '\n';
+    }
+    if(auto [state, hr] = this->get_state(); FAILED(hr))
+    {
+        std::cout << "  Failed to get_state with hr: " << int_to_hex_string(hr) << "\n";
+    } else {
+        std::cout << "  State: " << state << '\n';
+    }
+    std::cout << '\n';
+}
+
 HRESULT AudioSession::set_master_volume(float fLevel, LPCGUID EventContext)
 {
     return this->pSimpleAudioVolume->SetMasterVolume(fLevel, EventContext);

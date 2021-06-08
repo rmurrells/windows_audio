@@ -13,6 +13,7 @@ struct AudioSession
     std::tuple<BOOL, HRESULT> get_mute() const;
     PROCESSENTRY32W const &get_pentry() const;
     std::tuple<AudioSessionState, HRESULT> get_state() const;
+    void print() const;
     HRESULT set_master_volume(float fLevel, LPCGUID EventContext);
     HRESULT set_mute(BOOL mute, LPCGUID EventContext);
 

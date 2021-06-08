@@ -8,31 +8,6 @@
 #include "audio_manager.hpp"
 #include "int_to_hex_string.hpp"
 
-void print_session(AudioSession const &audio_session)
-{
-    auto pentry = audio_session.get_pentry();
-    std::cout << "  pid: " << pentry.th32ProcessID << '\n';
-    if (auto [volume, hr] = audio_session.get_master_volume(); FAILED(hr))
-    {
-        std::cout << "  Failed to get_master_volume with hr: " << int_to_hex_string(hr) << "\n";
-    } else {
-        std::cout << "  Volume: " << volume << '\n';
-    }
-    if (auto [mute, hr] = audio_session.get_mute(); FAILED(hr))
-    {
-        std::cout << "  Failed to get_mute with hr: " << int_to_hex_string(hr) << "\n";
-    } else {
-        std::cout << "  Mute: " << mute << '\n';
-    }
-    if(auto [state, hr] = audio_session.get_state(); FAILED(hr))
-    {
-        std::cout << "  Failed to get_state with hr: " << int_to_hex_string(hr) << "\n";
-    } else {
-        std::cout << "  State: " << state << '\n';
-    }
-    std::cout << '\n';
-}
-
 int main()
 {
     try
@@ -63,7 +38,7 @@ int main()
             auto audio_sessions = it->second.get_sessions();
             for (auto const &audio_session : audio_sessions)
             {
-                print_session(audio_session);
+                audio_session.print();
             }
         }
         else
