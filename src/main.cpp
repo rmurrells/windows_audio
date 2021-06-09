@@ -22,12 +22,55 @@ bool check_arg_no(Tokens const &tokens, Tokens::size_type target)
     return true;
 }
 
-bool process(std::string const &line, AudioManager &audio_manager)
+Tokens split(std::string const &line, char delim)
 {
     Tokens tokens;
-    std::copy(std::istream_iterator<std::string>{std::stringstream{line}},
-              std::istream_iterator<std::string>{},
-              std::back_inserter(tokens));
+    std::string::size_type start = 0;
+    std::string::size_type end = line.find('\"');
+
+    while ((end = line.find(delim, start)) != std::string::npos)
+    {
+        if (end != start)
+        {
+            tokens.emplace_back(line.substr(start, end - start));
+        }
+        start = end + 1;
+    }
+    if (start != line.size())
+    {
+        tokens.emplace_back(line.substr(start));
+    }
+    return tokens;
+}
+
+void trim_tokens(Tokens &tokens)
+{
+    for (auto it = tokens.begin(); it != tokens.end();)
+    {
+        auto start = it->find_first_not_of(' ');
+        if (start == std::string::npos) {
+            it = tokens.erase(it);
+        } else {
+            auto end = it->find_last_not_of(' ');
+            *it = it->substr(start, (end - start + 1));
+            ++it;
+        }
+    }
+}
+
+Tokens tokenize(std::string const &line)
+{
+    Tokens tokens = split(line, '\"');
+    trim_tokens(tokens);
+    for (auto const& token : tokens) {
+        std::cout << '|' << token << "|\n";
+    }
+    return tokens;
+}
+
+bool process(std::string const &line, AudioManager &audio_manager)
+{
+    auto tokens = tokenize(line);
     if (tokens.empty())
     {
         return true;
@@ -143,7 +186,8 @@ bool process(std::string const &line, AudioManager &audio_manager)
             std::cout << "Unrecognized process name: " << name << '\n';
         }
     }
-    else if (command == "quit" ||  command == "q") {
+    else if (command == "quit" || command == "q")
+    {
         return false;
     }
     else
