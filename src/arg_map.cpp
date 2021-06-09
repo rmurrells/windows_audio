@@ -44,7 +44,8 @@ ArgMap::ArgMap() : arg_map{}
                                   << "list: display the names of current audio processes.\n\n"
                                   << "list_info: display the names of current audio processes and relevant information.\n\n"
                                   << "set <process name> <volume scale from 0 - 1>: sets all processes with the process name to the supplied volume scale.\n\n"
-                                  << "mute <process name> <true / false>: mutes / unmutes all processes with the process name.\n\n";
+                                  << "mute <process name> <1 / 0>: mutes / unmutes all processes with the process name.\n\n"
+                                  << "quit: terminates the program.\n\n";
                           });
     this->arg_map.emplace("list", [](Tokens const &tokens, AudioManager &audio_manager)
                           {
@@ -55,6 +56,7 @@ ArgMap::ArgMap() : arg_map{}
                           });
     this->arg_map.emplace("list_info", [](Tokens const &tokens, AudioManager &audio_manager)
                           {
+                              std::cout << '\n';
                               for (auto const &audio_session_group : audio_manager.get_audio_sessions())
                               {
                                   audio_session_group.second.print();
@@ -66,18 +68,28 @@ ArgMap::ArgMap() : arg_map{}
                               {
                                   return;
                               }
+
+                              auto const &vol_str = tokens[2];
+                              double volume{0};
+                              try
+                              {
+                                  volume = std::stod(vol_str);
+                              }
+                              catch (...)
+                              {
+                                  std::cout << "Cannot convert " << vol_str << " to volume scale.\n";
+                                  return;
+                              }
+
                               auto &audio_map = audio_manager.get_audio_sessions();
                               auto const &name = tokens[1];
                               if (auto it = audio_map.find(std::wstring{name.begin(), name.end()}); it != audio_map.end())
                               {
-                                  try
-                                  {
-                                      it->second.set_master_volume(std::stod(tokens[2]), NULL);
-                                  }
-                                  catch (...)
-                                  {
-                                      std::cout << "Cannot convert " << tokens[2] << " to volume scale.\n";
-                                  }
+                                  it->second.set_master_volume(volume, NULL);
+                              }
+                              else if (name == "speakers")
+                              {
+                                  audio_manager.set_speaker_volume(volume, NULL);
                               }
                               else
                               {
@@ -90,18 +102,28 @@ ArgMap::ArgMap() : arg_map{}
                               {
                                   return;
                               }
+
+                              auto const &set_str = tokens[2];
+                              bool set{false};
+                              try
+                              {
+                                  set = std::stoi(set_str);
+                              }
+                              catch (...)
+                              {
+                                  std::cout << "Cannot convert \"" << set_str << "\" to bool.\n";
+                                  return;
+                              }
+
                               auto &audio_map = audio_manager.get_audio_sessions();
                               auto const &name = tokens[1];
                               if (auto it = audio_map.find(std::wstring{name.begin(), name.end()}); it != audio_map.end())
                               {
-                                  try
-                                  {
-                                      it->second.set_mute(std::stoi(tokens[2]), NULL);
-                                  }
-                                  catch (...)
-                                  {
-                                      std::cout << "Cannot convert \"" << tokens[2] << "\" to bool.\n";
-                                  }
+                                  it->second.set_mute(set, NULL);
+                              }
+                              else if (name == "speakers")
+                              {
+                                  audio_manager.set_speaker_mute(set, NULL);
                               }
                               else
                               {

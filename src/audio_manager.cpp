@@ -29,13 +29,23 @@ AudioManager::AudioManager()
     }
 
     if (auto hr = this->pMMDevice->Activate(
+            __uuidof(IAudioEndpointVolume),
+            CLSCTX_ALL,
+            NULL,
+            (void **)&this->pAudioEndpointVolume);
+        FAILED(hr))
+    {
+        throw std::runtime_error("Activate IAudioEndpointVolume failed with " + int_to_hex_string(hr));
+    }
+
+    if (auto hr = this->pMMDevice->Activate(
             __uuidof(IAudioSessionManager2),
             CLSCTX_ALL,
             NULL,
             (void **)&this->pAudioSessionManager2);
         FAILED(hr))
     {
-        throw std::runtime_error("Activate failed with " + int_to_hex_string(hr));
+        throw std::runtime_error("Activate IAudioSessionManager2 failed with " + int_to_hex_string(hr));
     }
 
     if (auto hr = this->pAudioSessionManager2->GetSessionEnumerator(
@@ -44,6 +54,18 @@ AudioManager::AudioManager()
     {
         throw std::runtime_error("GetSessionEnumerator failed with " + int_to_hex_string(hr));
     }
+}
+
+void AudioManager::print_speakers() const {
+    
+}
+
+HRESULT AudioManager::set_speaker_volume(float fLevel, LPCGUID EventContext) {
+    return this->pAudioEndpointVolume->SetMasterVolumeLevelScalar(fLevel, EventContext);
+}
+
+HRESULT AudioManager::set_speaker_mute(BOOL mute, LPCGUID EventContext) {
+    return this->pAudioEndpointVolume->SetMute(mute, EventContext);
 }
 
 AudioSessionMap AudioManager::get_audio_sessions()
