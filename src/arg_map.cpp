@@ -15,24 +15,6 @@ namespace
         }
         return true;
     }
-
-    void set_mute(Tokens const &tokens, AudioManager &audio_manager, bool const set)
-    {
-        if (!check_arg_no(tokens, 2))
-        {
-            return;
-        }
-        auto &audio_map = audio_manager.get_audio_sessions();
-        auto const &name = tokens[1];
-        if (auto it = audio_map.find(std::wstring{name.begin(), name.end()}); it != audio_map.end())
-        {
-            it->second.set_mute(set, NULL);
-        }
-        else
-        {
-            std::cout << "Unrecognized process name: " << name << '\n';
-        }
-    }
 }
 
 ArgMap::ArgMap() : arg_map{}
@@ -43,12 +25,13 @@ ArgMap::ArgMap() : arg_map{}
                                   << "\n"
                                   << "list: display the names of current audio processes.\n\n"
                                   << "list_info: display the names of current audio processes and relevant information.\n\n"
-                                  << "set <process name> <volume scale from 0 - 1>: sets all processes with the process name to the supplied volume scale.\n\n"
-                                  << "mute <process name> <1 / 0>: mutes / unmutes all processes with the process name.\n\n"
+                                  << "set <name> <volume scale from 0 - 1>: sets all processes with the process name to the supplied volume scale.\n\n"
+                                  << "mute <name> <1 / 0>: mutes / unmutes all processes with the process name.\n\n"
                                   << "quit: terminates the program.\n\n";
                           });
     this->arg_map.emplace("list", [](Tokens const &tokens, AudioManager &audio_manager)
                           {
+                              std::cout << "speakers\n";
                               for (auto const &audio_session_group : audio_manager.get_audio_sessions())
                               {
                                   std::wcout << audio_session_group.second.get_name() << '\n';
@@ -56,7 +39,23 @@ ArgMap::ArgMap() : arg_map{}
                           });
     this->arg_map.emplace("list_info", [](Tokens const &tokens, AudioManager &audio_manager)
                           {
-                              std::cout << '\n';
+                              std::cout << "\nspeakers:\n";
+                              if (auto [volume, hr] = audio_manager.get_speaker_volume(); FAILED(hr))
+                              {
+                                  std::cout << "  Failed to get_speaker_volume with hr: " << int_to_hex_string(hr) << "\n";
+                              }
+                              else
+                              {
+                                  std::cout << "  Volume: " << volume << '\n';
+                              }
+                              if (auto [mute, hr] = audio_manager.get_speaker_mute(); FAILED(hr))
+                              {
+                                  std::cout << "  Failed to get_speaker_mute with hr: " << int_to_hex_string(hr) << "\n";
+                              }
+                              else
+                              {
+                                  std::cout << "  Mute: " << mute << "\n\n";
+                              }
                               for (auto const &audio_session_group : audio_manager.get_audio_sessions())
                               {
                                   audio_session_group.second.print();

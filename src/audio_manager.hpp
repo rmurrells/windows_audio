@@ -4,8 +4,8 @@
 
 #include <atlbase.h>
 #include <audiopolicy.h>
-#include <mmdeviceapi.h>
 #include <endpointvolume.h>
+#include <mmdeviceapi.h>
 
 #include "audio_session_group.hpp"
 #include "co_initialize_container.hpp"
@@ -21,6 +21,8 @@ public:
     AudioManager &operator=(AudioManager const &) = delete;
     AudioManager(AudioManager &&audio_manager) = delete;
     AudioManager &operator=(AudioManager &&audio_manager) = delete;
+    std::tuple<float, HRESULT> get_speaker_volume() const;
+    std::tuple<BOOL, HRESULT> get_speaker_mute() const;
     HRESULT set_speaker_volume(float fLevel, LPCGUID EventContext);
     HRESULT set_speaker_mute(BOOL mute, LPCGUID EventContext);
     AudioSessionMap get_audio_sessions();

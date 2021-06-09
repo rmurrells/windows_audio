@@ -5,8 +5,9 @@
 #include <audiopolicy.h>
 #include <TlHelp32.h>
 
-struct AudioSession
+class AudioSession
 {
+public:
     AudioSession(CComPtr<IAudioSessionControl> const &pAudioSessionControl);
     ~AudioSession() = default;
     std::tuple<float, HRESULT> get_master_volume() const;

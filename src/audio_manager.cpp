@@ -56,8 +56,18 @@ AudioManager::AudioManager()
     }
 }
 
-void AudioManager::print_speakers() const {
-    
+std::tuple<float, HRESULT> AudioManager::get_speaker_volume() const
+{
+    float pfLevel = 0;
+    auto hr = this->pAudioEndpointVolume->GetMasterVolumeLevelScalar(&pfLevel);
+    return std::make_tuple(pfLevel, hr);
+}
+
+std::tuple<BOOL, HRESULT> AudioManager::get_speaker_mute() const
+{
+    BOOL pbMute = 0;
+    auto hr = this->pAudioEndpointVolume->GetMute(&pbMute);
+    return std::make_tuple(pbMute, hr);
 }
 
 HRESULT AudioManager::set_speaker_volume(float fLevel, LPCGUID EventContext) {
