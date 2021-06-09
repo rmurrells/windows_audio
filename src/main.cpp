@@ -65,10 +65,6 @@ Tokens tokenize(std::string const &line)
 {
     Tokens tokens = split(line, '\"');
     trim_tokens(tokens);
-    for (auto const &token : tokens)
-    {
-        std::cout << '|' << token << "|\n";
-    }
     return tokens;
 }
 
