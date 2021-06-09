@@ -9,18 +9,18 @@ AudioSession::AudioSession(CComPtr<IAudioSessionControl> const &pAudioSessionCon
 {
     if (auto hr = pAudioSessionControl.QueryInterface(&this->pAudioSessionControl2); FAILED(hr))
     {
-        throw std::runtime_error("IAudioSessionControl QueryInterface failed with " + int_to_hex_string(hr));
+        throw std::runtime_error("IAudioSessionControl QueryInterface failed with " + iths(hr));
     }
 
     if (auto hr = this->pAudioSessionControl2.QueryInterface(&this->pSimpleAudioVolume); FAILED(hr))
     {
-        throw std::runtime_error("IAudioSessionControl2 QueryInterface failed with " + int_to_hex_string(hr));
+        throw std::runtime_error("IAudioSessionControl2 QueryInterface failed with " + iths(hr));
     }
 
     DWORD pid = 0;
     if (auto hr = this->pAudioSessionControl2->GetProcessId(&pid); FAILED(hr))
     {
-        throw std::runtime_error("IAudioSessionControl2 GetProcessId failed with " + int_to_hex_string(hr));
+        throw std::runtime_error("IAudioSessionControl2 GetProcessId failed with " + iths(hr));
     }
 
     auto handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, pid);
@@ -79,7 +79,7 @@ void AudioSession::print() const
     std::cout << "  pid: " << pentry.th32ProcessID << '\n';
     if (auto [volume, hr] = this->get_master_volume(); FAILED(hr))
     {
-        std::cout << "  Failed to get_master_volume with hr: " << int_to_hex_string(hr) << "\n";
+        std::cout << "  Failed to get_master_volume with hr: " << iths(hr) << "\n";
     }
     else
     {
@@ -87,7 +87,7 @@ void AudioSession::print() const
     }
     if (auto [mute, hr] = this->get_mute(); FAILED(hr))
     {
-        std::cout << "  Failed to get_mute with hr: " << int_to_hex_string(hr) << "\n";
+        std::cout << "  Failed to get_mute with hr: " << iths(hr) << "\n";
     }
     else
     {
@@ -95,7 +95,7 @@ void AudioSession::print() const
     }
     if (auto [state, hr] = this->get_state(); FAILED(hr))
     {
-        std::cout << "  Failed to get_state with hr: " << int_to_hex_string(hr) << "\n";
+        std::cout << "  Failed to get_state with hr: " << iths(hr) << "\n";
     }
     else
     {

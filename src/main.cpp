@@ -48,9 +48,12 @@ void trim_tokens(Tokens &tokens)
     for (auto it = tokens.begin(); it != tokens.end();)
     {
         auto start = it->find_first_not_of(' ');
-        if (start == std::string::npos) {
+        if (start == std::string::npos)
+        {
             it = tokens.erase(it);
-        } else {
+        }
+        else
+        {
             auto end = it->find_last_not_of(' ');
             *it = it->substr(start, (end - start + 1));
             ++it;
@@ -62,7 +65,8 @@ Tokens tokenize(std::string const &line)
 {
     Tokens tokens = split(line, '\"');
     trim_tokens(tokens);
-    for (auto const& token : tokens) {
+    for (auto const &token : tokens)
+    {
         std::cout << '|' << token << "|\n";
     }
     return tokens;
@@ -99,7 +103,7 @@ bool process(std::string const &line, AudioManager &audio_manager)
         std::cout << "\nspeakers:\n";
         if (auto [volume, hr] = audio_manager.get_speaker_volume(); FAILED(hr))
         {
-            std::cout << "  Failed to get_speaker_volume with hr: " << int_to_hex_string(hr) << "\n";
+            std::cout << "  Failed to get_speaker_volume with hr: " << iths(hr) << "\n";
         }
         else
         {
@@ -107,7 +111,7 @@ bool process(std::string const &line, AudioManager &audio_manager)
         }
         if (auto [mute, hr] = audio_manager.get_speaker_mute(); FAILED(hr))
         {
-            std::cout << "  Failed to get_speaker_mute with hr: " << int_to_hex_string(hr) << "\n";
+            std::cout << "  Failed to get_speaker_mute with hr: " << iths(hr) << "\n";
         }
         else
         {
@@ -215,7 +219,7 @@ int main()
         }
         catch (ATL::CAtlException const &e)
         {
-            std::cout << "ATL::CAtlException - " << int_to_hex_string(HRESULT(e)) << '\n';
+            std::cout << "ATL::CAtlException - " << iths(HRESULT(e)) << '\n';
         }
         catch (std::exception const &e)
         {

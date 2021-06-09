@@ -21,7 +21,7 @@ CoInitializeContainer::CoInitializeContainer()
     HRESULT hr = CoInitialize(NULL);
     if (FAILED(hr))
     {
-        throw std::runtime_error("CoInitialize failed with " + int_to_hex_string(hr));
+        throw std::runtime_error("CoInitialize failed with " + iths(hr));
     }
 }
 

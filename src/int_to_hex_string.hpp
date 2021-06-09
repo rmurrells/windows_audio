@@ -3,7 +3,7 @@
 #include <sstream>
 
 template <class Int>
-std::string int_to_hex_string(Int i)
+std::string iths(Int i)
 {
     std::stringstream sstr;
     sstr << std::hex << i;
