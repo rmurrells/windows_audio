@@ -5,7 +5,7 @@
         "label": "msvc build",
         "type": "shell",
         "command": "cl.exe",
-        "args": ["/EHs", "/Zi", "/std:c++17", "/Fe:", "main.exe", "src/*.cpp"], //"/O2",
+        "args": ["/EHs", "/Zi", "/std:c++17", "/Fe:", "windows_audio.exe", "src/*.cpp"],
         "group": {
           "kind": "build",
           "isDefault": true
