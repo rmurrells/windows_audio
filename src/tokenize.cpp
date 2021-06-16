@@ -70,12 +70,17 @@ namespace
         return tokens;
     }
 
-    Tokens split_if_not_quote(QuoteTokens const &quote_tokens) {
+    Tokens split_if_not_quote(QuoteTokens const &quote_tokens)
+    {
         Tokens tokens;
-        for (auto const &quote_token : quote_tokens) {
-            if (quote_token.first) {
+        for (auto const &quote_token : quote_tokens)
+        {
+            if (quote_token.first)
+            {
                 tokens.emplace_back(quote_token.second);
-            } else {
+            }
+            else
+            {
                 auto split_tokens = split(quote_token.second, ' ');
                 tokens.insert(tokens.end(), split_tokens.begin(), split_tokens.end());
             }
