@@ -164,6 +164,8 @@ int main()
     AudioManager audio_manager;
     std::string line;
 
+    std::cout << "Windows Audio Tool\nType help / h for help.\n";
+
     while (true)
     {
         std::cout << "command: ";
@@ -189,5 +191,5 @@ int main()
         }
     }
 loop_end:
-    std::cout << "Exited successfully\n";
+    std::cout << "Closed Windows Audio Tool\n";
 }
