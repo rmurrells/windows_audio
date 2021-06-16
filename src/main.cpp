@@ -8,8 +8,7 @@
 
 #include "audio_manager.hpp"
 #include "int_to_hex_string.hpp"
-
-using Tokens = std::vector<std::string>;
+#include "tokenize.hpp"
 
 bool check_arg_no(Tokens const &tokens, Tokens::size_type target)
 {
@@ -22,67 +21,30 @@ bool check_arg_no(Tokens const &tokens, Tokens::size_type target)
     return true;
 }
 
-Tokens split(std::string const &line, char delim)
-{
-    Tokens tokens;
-    std::string::size_type start = 0;
-    std::string::size_type end = line.find('\"');
-
-    while ((end = line.find(delim, start)) != std::string::npos)
-    {
-        if (end != start)
-        {
-            tokens.emplace_back(line.substr(start, end - start));
-        }
-        start = end + 1;
-    }
-    if (start != line.size())
-    {
-        tokens.emplace_back(line.substr(start));
-    }
-    return tokens;
-}
-
-void trim_tokens(Tokens &tokens)
-{
-    for (auto it = tokens.begin(); it != tokens.end();)
-    {
-        auto start = it->find_first_not_of(' ');
-        if (start == std::string::npos)
-        {
-            it = tokens.erase(it);
-        }
-        else
-        {
-            auto end = it->find_last_not_of(' ');
-            *it = it->substr(start, (end - start + 1));
-            ++it;
-        }
-    }
-}
-
-Tokens tokenize(std::string const &line)
-{
-    Tokens tokens = split(line, '\"');
-    trim_tokens(tokens);
-    return tokens;
-}
-
 bool process(std::string const &line, AudioManager &audio_manager)
 {
-    auto tokens = tokenize(line);
+    Tokens tokens;
+    try
+    {
+        tokens = tokenize(line);
+    }
+    catch (std::exception const &e)
+    {
+        std::cout << e.what() << '\n';
+        return true;
+    }
     if (tokens.empty())
     {
         return true;
     }
     auto const &command = tokens[0];
-    if (command == "help")
+    if (command == "help" || command == "h")
     {
         std::cout
             << "\n"
             << "list (l): display the names of current audio processes.\n\n"
             << "list_info (li): display the names of current audio processes and relevant information.\n\n"
-            << "set (s) <name> <volume scale from 0 - 1>: set all processes with the process name to the supplied volume scale.\n\n"
+            << "set (s) <name> <volume scale from 0. - 1.>: set all processes with the process name to the supplied volume scale.\n\n"
             << "mute (m) <name> <1 / 0>: mutes / unmute all processes with the process name.\n\n"
             << "quit (q): terminate the program.\n\n";
     }
